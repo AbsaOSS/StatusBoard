@@ -1,0 +1,33 @@
+package za.co.absa.statusboard.api.http
+
+import io.circe.generic.auto._
+import sttp.model.StatusCode
+import sttp.monad.MonadError
+import sttp.tapir.DecodeResult
+import sttp.tapir.generic.auto.schemaForCaseClass
+import sttp.tapir.json.circe.jsonBody
+import sttp.tapir.server.interceptor.DecodeFailureContext
+import sttp.tapir.server.interceptor.decodefailure.DecodeFailureHandler
+import sttp.tapir.server.interceptor.decodefailure.DefaultDecodeFailureHandler.respond
+import sttp.tapir.server.model.ValuedEndpointOutput
+import sttp.tapir.ztapir.{headers, statusCode}
+import za.co.absa.statusboard.model.ErrorResponse.BadRequestResponse
+import zio.Task
+
+object DecodeFailureHandlerImpl extends DecodeFailureHandler[Task] {
+  override def apply(ctx: DecodeFailureContext)(implicit monad: MonadError[Task]): Task[Option[ValuedEndpointOutput[_]]] = {
+    monad.unit(
+      respond(ctx).map { case (sc, hs) =>
+        val message = if (sc == StatusCode.Unauthorized) "Unauthorized" else ctx.failure match {
+          case DecodeResult.Missing => s"Decoding error - missing value."
+          case DecodeResult.Multiple(vs) => s"Decoding error - $vs."
+          case DecodeResult.Error(original, _) => s"Decoding error for an input value '$original'."
+          case DecodeResult.Mismatch(_, actual) => s"Unexpected value '$actual'."
+          case DecodeResult.InvalidValue(errors) => s"Validation error - $errors."
+        }
+        val errorResponse = BadRequestResponse(message)
+        ValuedEndpointOutput(statusCode.and(headers).and(jsonBody[BadRequestResponse]), (sc, hs, errorResponse))
+      }
+    )
+  }
+}

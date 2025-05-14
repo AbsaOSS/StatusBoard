@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/cy",
+    "sourceMap": false,
+    "types": ["cypress", "node"]
+  },
+  "include": ["cypress/**/*.ts", "cypress/**/*.js"],
+  "exclude": ["node_modules", "**/*.spec-broken.ts", "**/*.spec.broken.ts", "**/*.spec.ts"]
+}

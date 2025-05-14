@@ -2,12 +2,62 @@ name: Status Board UI - Tests with Lint
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [ master ]
+    types: [ opened, edited, synchronize, reopened ]
+    paths:
+      - 'ui/**'
+      - '.github/workflows/status-board-ui-tests.yml'
 
 jobs:
-  checkrunner: 
-    name: Workflow test
+  find-runner:
     runs-on: ubuntu-latest
+    environment: DEV
+    outputs:
+      runner: ${{ steps.find-runner.outputs.runner }}
     steps:
-      - name: Check
-        run: echo "Runner ${{ runner.environment }}"
-        shell: bash
+      - id: find-runner
+        run: |
+          echo "runner=${{ vars.GH_RUNNER }}" >> $GITHUB_OUTPUT
+
+  build-and-lint:
+    needs: [ find-runner ]
+    environment: DEV
+    runs-on: ${{ needs.find-runner.outputs.runner }}
+    defaults:
+      run:
+        working-directory: ui
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Debug info
+        run: |
+          node --version
+          npm --version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test with coverage
+        run: npm test -- --coverage
+
+      - name: Build
+        run: npm run build -- --configuration production
+
+      - name: Log Angular errors
+        if: failure()
+        run: cat /tmp/ng-*/angular-errors.log

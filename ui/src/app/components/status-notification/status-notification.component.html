@@ -1,0 +1,44 @@
+<div [ngClass]="['app-notification-wrapper', position]">
+  <div
+    [@notificationState]="{ value: 'visible' }"
+    [class]="status()?.type ?? ''"
+    [ngClass]="{ filled: filled }"
+    [ngStyle]="{ 'max-width': config().maxWidth }"
+    class="app-notification-content"
+    style="width: 100%">
+    <div [ngClass]="{ filled: filled }" class="app-notification-icon">
+      <cps-icon [color]="filled ? '#fff' : color" [icon]="'toast-' + status()?.type" size="normal"></cps-icon>
+    </div>
+    <div class="app-notification-message">
+      <p class="app-notification-message-header">{{ status()?.message || '' }}</p>
+      @if (status()?.details) {
+        <p class="app-notification-message-details">
+          {{ status()?.details }}
+        </p>
+      }
+    </div>
+    @if (config().closable !== false) {
+      <div class="app-notification-buttons">
+        <cps-button
+          (clicked)="close()"
+          [color]="color"
+          class="app-notification-close-button"
+          icon="close-x"
+          type="borderless"
+          width="40"></cps-button>
+      </div>
+    }
+    @if (config().refreshable === true) {
+      <div class="app-notification-buttons">
+        <cps-button
+          (clicked)="onClickRefreshButton()"
+          [disabled]="refresh()"
+          class="app-notification-refresh-button"
+          color="bg-lightest"
+          icon="refresh"
+          label="Refresh"
+          type="borderless"></cps-button>
+      </div>
+    }
+  </div>
+</div>

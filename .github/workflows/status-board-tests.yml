@@ -2,12 +2,98 @@ name: Status Board - Tests with JaCoCo report
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [ master ]
+    types: [ opened, edited, synchronize, reopened ]
+
+env:
+  scalaLong13: 2.13.12
+  scalaShort13: "2.13"
+  overall: 80.0
+  changed: 80.0
 
 jobs:
-  checkrunner: 
-    name: Workflow test
-    runs-on: ubuntu-latest
+  test:
+    name: Build and test
+    runs-on: [npintdebdtools]
+    services:
+      dynamodb-local:
+        image: "amazon/dynamodb-local:latest"
+        ports:
+          - "8000:8000"
     steps:
-      - name: Check
-        run: echo "Runner ${{ runner.environment }}"
-        shell: bash
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup JVM and SBT
+        uses: coursier/setup-action@v1.3.5
+        with:
+          jvm: corretto:21.0.2.13.1
+          apps: sbt
+
+      - name: Build and run tests
+        continue-on-error: true
+        id: jacocorun
+        run: sbt jacoco
+        env:
+          AWS_REGION: "ignored"
+          AWS_ACCESS_KEY_ID: "ignored"
+          AWS_SECRET_ACCESS_KEY: "ignored"
+
+      - name: Add coverage to PR
+        if: steps.jacocorun.outcome == 'success'
+        id: jacoco-root
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          paths: ${{ github.workspace }}/target/scala-${{ env.scalaShort13 }}/jacoco/report/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: ${{ env.overall }}
+          min-coverage-changed-files: ${{ env.changed }}
+          title: JaCoCo code coverage report - scala ${{ env.scalaLong13 }}
+          update-comment: true
+      - name: Get the Coverage info
+        if: steps.jacocorun.outcome == 'success'
+        run: |
+          echo "Total coverage ${{ steps.jacoco-root.outputs.coverage-overall }}"
+          echo "Changed Files coverage ${{ steps.jacoco-root.outputs.coverage-changed-files }}"
+      - name: Fail PR if changed files coverage is less than ${{ env.changed }}%
+        if: steps.jacocorun.outcome == 'success'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const coverageCheckFailed =
+              Number('${{ steps.jacoco-root.outputs.coverage-changed-files }}') < Number('${{ env.changed }}');
+            if (coverageCheckFailed) {
+              core.setFailed('Changed files coverage is less than ${{ env.changed }}%!');
+            }
+      - name: Edit JaCoCo comments on build failure
+        if: steps.jacocorun.outcome != 'success'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const jacocoReportRegExp = /^### JaCoCo .* code coverage report .*/;
+
+            const comments = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number,
+            });
+
+            for (const comment of comments.data) {
+              const lines = comment.body.split('\n');
+              if (lines.length > 0 && jacocoReportRegExp.test(lines[0])) {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: comment.id,
+                  body: lines[0] + "\n\n### Build Failed",
+                });
+              }
+            }
+
+            core.setFailed('JaCoCo test coverage report generation failed, and related PR comments were updated.');

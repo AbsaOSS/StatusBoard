@@ -1,0 +1,81 @@
+@import '../variables.scss';
+
+.top-toolbar {
+  height: $top-tbar-height;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid lightgrey;
+
+  .left-section {
+    display: flex;
+    align-items: center;
+  }
+
+  .link-buttons {
+    display: flex;
+    align-items: center;
+
+    a {
+      all: unset;
+      display: inline-flex; // ensures icon centers nicely
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      color: white;
+      background-color: #007bff;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-left: 5px;
+      cursor: pointer;
+
+      fa-icon {
+        font-size: 1rem; // Increase icon size
+      }
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+
+  img {
+    width: 42px;
+    height: 42px;
+  }
+
+  span {
+    margin-left: 16px;
+    font-size: 18px;
+    font-style: italic;
+    color: $color-calm;
+  }
+}
+
+.container {
+  display: flex;
+  max-width: 100%;
+  padding: 0;
+  height: calc(100vh - $top-tbar-height);
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: auto;
+    padding-top: 20px;
+    background-color: $composition-background;
+
+    .filter {
+      margin: 20px 30px;
+    }
+  }
+}
+
+router-outlet {
+  margin: 20px 30px;
+}
