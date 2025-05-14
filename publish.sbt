@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package za.co.absa.statusboard.notification.actioners
-
-import za.co.absa.statusboard.model.{NotificationAction, RefinedStatus}
-import zio.Task
-import zio.macros.accessible
-
-/**
- * Specialization of NotificationActioner for Repository
- */
-@accessible
-trait RepositoryNotificationActioner {
-  def notify(action: NotificationAction.Repository, status: RefinedStatus): Task[Unit]
-}
+ThisBuild / organization     := "za.co.absa.statusboard"
+ThisBuild / organizationName := "ABSA Group Limited"
+ThisBuild / organizationHomepage := Some(url("https://www.absa.africa"))
+ThisBuild / description := "CPS Status Board is a real-time monitoring platform built specifically for ABSA"
+ThisBuild / startYear := Some(2024)
+ThisBuild / licenses += "Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")
+ThisBuild / homepage := Some(url("https://github.com/AbsaOSS/StatusBoard"))
