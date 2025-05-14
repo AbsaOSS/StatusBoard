@@ -1,0 +1,13 @@
+name: Release - create draft release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkrunner: 
+    name: Workflow test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check
+        run: echo "Runner ${{ runner.environment }}"
+        shell: bash
