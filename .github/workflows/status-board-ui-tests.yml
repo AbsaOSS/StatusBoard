@@ -10,20 +10,9 @@ on:
       - '.github/workflows/status-board-ui-tests.yml'
 
 jobs:
-  find-runner:
-    runs-on: ubuntu-latest
-    environment: DEV
-    outputs:
-      runner: ${{ steps.find-runner.outputs.runner }}
-    steps:
-      - id: find-runner
-        run: |
-          echo "runner=${{ vars.GH_RUNNER }}" >> $GITHUB_OUTPUT
-
   build-and-lint:
-    needs: [ find-runner ]
     environment: DEV
-    runs-on: ${{ needs.find-runner.outputs.runner }}
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ui

@@ -15,7 +15,7 @@ env:
 jobs:
   test:
     name: Build and test
-    runs-on: [npintdebdtools]
+    runs-on: ubuntu-latest
     services:
       dynamodb-local:
         image: "amazon/dynamodb-local:latest"
