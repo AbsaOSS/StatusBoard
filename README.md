@@ -148,7 +148,7 @@ Mail templates support these variables
 | `{{ NOTIFICATION_SENT }}`    | Whether notification of service being in this state was sent (i.e. intermittent failures are not reported immediatelly)       |
 
 ## Architecture
-Can be found on [wiki - Architecture](https://github.com/absa-group/status-board/wiki/Architecture)
+Can be found on [wiki - Architecture](https://github.com/AbsaOSS/StatusBoard/wiki/Architecture)
 
 ## Release Cycle
 
