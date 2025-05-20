@@ -1,0 +1,70 @@
+@if (!card()) {
+  <div>You should never see this</div>
+} @else {
+  <div class="card-body" [ngClass]="card()!.status.status.color">
+    <div class="icon">
+      <cps-icon [icon]="card()!.derived.icon" [color]="card()!.derived.cssColor" size="large"></cps-icon>
+    </div>
+    <div class="details">
+      <div class="header-row">
+        <div class="title">{{ card()!.status.env }}: {{ card()!.status.serviceName }}</div>
+        <div class="link-buttons">
+          <button (click)="showDetails()" title="Details">
+            <fa-icon [icon]="icoDetails"></fa-icon>
+          </button>
+          @if (showButtons()) {
+            <button (click)="showDependencyGraph()" title="Dependencies">
+              <fa-icon [icon]="icoDependencies"></fa-icon>
+            </button>
+            @if (card()!.configuration.links.home) {
+              <a href="{{ card()!.configuration.links.home }}" target="_blank" title="Home"><fa-icon [icon]="icoHome"></fa-icon></a>
+            }
+            @if (card()!.configuration.links.snow) {
+              <a href="{{ card()!.configuration.links.snow }}" target="_blank" title="Create SNOW Ticket"
+                ><fa-icon [icon]="icoSnow"></fa-icon
+              ></a>
+            }
+            @if (card()!.configuration.links.support) {
+              <a href="{{ card()!.configuration.links.support }}" target="_blank" title="Support"
+                ><fa-icon [icon]="icoSupport"></fa-icon
+              ></a>
+            }
+            @if (card()!.configuration.links.documentation) {
+              <a href="{{ card()!.configuration.links.documentation }}" target="_blank" title="Documentation"
+                ><fa-icon [icon]="icoDocs"></fa-icon
+              ></a>
+            }
+            @if (card()!.configuration.links.github) {
+              <a href="{{ card()!.configuration.links.github }}" title="Source code @GitHub" target="_blank"
+                ><fa-icon [icon]="icoGitHub"></fa-icon
+              ></a>
+            }
+          }
+        </div>
+      </div>
+      <div class="status">{{ card()!.status.status }}</div>
+      @if (card()!.status.maintenanceMessage) {
+        <div class="status">{{ card()!.status.maintenanceMessage }}</div>
+      }
+      <div class="timeframe">{{ card()!.derived.timeFrame }}</div>
+      @if (showHistoryBar()) {
+        <div class="historyBar">
+          @for (subCard of history(); track subCard.id) {
+            <span
+              class="icon"
+              cpsTooltip="{{ subCard.status.status }}<br>{{
+                subCard.status.maintenanceMessage === '' ? '' : subCard.status.maintenanceMessage + '<br>'
+              }}{{ subCard.derived.timeFrame }}">
+              <cps-icon [icon]="subCard.derived.icon" [color]="subCard.derived.cssColor" size="xsmall"></cps-icon>
+            </span>
+          }
+          @for (_ of historyFill(); track $index) {
+            <span class="icon">
+              <cps-icon cpsTooltip="not enough history" [icon]="'circle'" [color]="'GRAY'" size="xsmall"></cps-icon>
+            </span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

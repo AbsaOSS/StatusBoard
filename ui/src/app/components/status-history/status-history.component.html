@@ -1,0 +1,29 @@
+<cps-divider></cps-divider>
+
+<div class="service-card-header">
+  <h3 class="service-card-title">Status History</h3>
+</div>
+
+@if (cards().length === 0) {
+  <div class="no-services-message">
+    <p>No services to display.</p>
+  </div>
+}
+
+@if (cards().length > 0) {
+  @for (card of getPaginatedCards(); track card.id) {
+    <div class="service-card">
+      <app-service-card [card]="card"></app-service-card>
+    </div>
+  }
+
+  <div class="paginator">
+    <cps-paginator
+      (pageChanged)="onPageChange($event)"
+      [first]="first"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"
+      [rows]="rows"
+      [totalRecords]="totalRecords">
+    </cps-paginator>
+  </div>
+}

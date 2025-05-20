@@ -1,0 +1,19 @@
+<cps-divider />
+<div class="service-card-header">
+  <h3 class="service-card-title">Latest Statuses</h3>
+</div>
+
+<div class="service-card-container">
+  <cps-loader *ngIf="isLoading()" [fullScreen]="true"></cps-loader>
+  @if (cards().length === 0) {
+    <div class="no-services-message">
+      <p>No services to display.</p>
+    </div>
+  } @else {
+    @for (card of cards(); track card.id) {
+      <div class="service-card">
+        <app-service-card [card]="card" [showButtons]="true" [showHistoryBar]="true"></app-service-card>
+      </div>
+    }
+  }
+</div>

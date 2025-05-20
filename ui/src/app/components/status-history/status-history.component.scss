@@ -1,0 +1,22 @@
+.service-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 1rem 3rem;
+}
+
+.service-card-title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.no-services-message {
+  width: 100%;
+  text-align: center;
+  padding: 2rem;
+  color: #757575;
+}
+
+.service-card {
+  margin-bottom: 1rem;
+}

@@ -1,0 +1,9 @@
+# Aliases leverage the naming conventions in test file suffixes:
+#   - "UnitTests" suffix for test files and suites defining unit tests
+#   - "*IntegrationTests" suffix for test files and suites defining integration tests
+
+# CPS QA types aliases
+alias test=; testOnly *UnitTests
+alias testDynamo=; testOnly *DynamoDBIntegrationTests
+alias testSMTP=; testOnly *SMTPIntegrationTests
+alias testMSTeams=; testOnly *MSTeamsIntegrationTests

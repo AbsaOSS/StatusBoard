@@ -1,0 +1,108 @@
+.card-body {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+
+  &.GREEN {
+    border-left: 3px solid var(--cps-color-success);
+    border-top: 3px solid var(--cps-color-success);
+  }
+
+  &.AMBER {
+    border-left: 3px solid var(--cps-color-warn);
+    border-top: 3px solid var(--cps-color-warn);
+  }
+
+  &.RED {
+    border-left: 3px solid var(--cps-color-error);
+    border-top: 3px solid var(--cps-color-error);
+  }
+
+  &.BLACK {
+    border-left: 3px solid var(--cps-color-graphite);
+    border-top: 3px solid var(--cps-color-graphite);
+  }
+
+  .icon {
+    margin-right: 1rem;
+  }
+
+  .details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .link-buttons {
+      text-align: right;
+    }
+
+    .link-buttons a,
+    .link-buttons button {
+      all: unset;
+      display: inline-flex; // ensures icon centers nicely
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      color: white;
+      background-color: #007bff;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-left: 5px;
+      cursor: pointer;
+
+      fa-icon {
+        font-size: 1rem; // Increase icon size
+      }
+
+      &:hover {
+        background-color: #0056b3;
+      }
+
+      &:disabled {
+        background-color: #efefef;
+        color: #555555;
+      }
+    }
+
+    .title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+
+      .title {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      .link-buttons {
+        display: flex;
+        gap: 10px;
+      }
+    }
+
+    .status {
+      font-family: 'Source Sans Pro';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 1rem;
+      line-height: 24px;
+    }
+
+    .status-timeframe {
+      margin-top: 1rem;
+      color: #757575;
+      font-size: 0.875rem;
+    }
+  }
+}

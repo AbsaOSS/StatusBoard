@@ -1,0 +1,23 @@
+<div class="modal-content">
+  <div class="service-card-header">
+    <h3 class="service-card-title">Dependencies</h3>
+  </div>
+  @for (card of dependenciesCards; track card.id) {
+    <div class="service-card" [style.margin-left.%]="card.depth * 5">
+      <app-service-card [card]="card" [showHistoryBar]="true"></app-service-card>
+    </div>
+  }
+
+  <cps-divider />
+
+  <div class="service-card-header">
+    <h3 class="service-card-title">Dependents</h3>
+  </div>
+  @for (card of dependentsCards; track card.id) {
+    <div class="service-card" [style.margin-left.%]="card.depth * 5">
+      <app-service-card [card]="card" [showHistoryBar]="true"></app-service-card>
+    </div>
+  }
+
+  <app-service-history [cards]="historyCards"></app-service-history>
+</div>
