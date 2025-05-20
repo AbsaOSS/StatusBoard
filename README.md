@@ -21,7 +21,7 @@ CPS Status Board is a real-time monitoring platform built specifically for ABSA.
   - supports custom maintenance message (i.e. for expected downtime)
   - HTTP based health checks
   - AWS SDK based health checks
-  - [wiki - List of all supported checkers](https://github.com/absa-group/status-board/wiki/Supported-checkers) 
+  - [wiki - List of all supported checkers](https://github.com/AbsaOSS/StatusBoard/wiki/Supported-checkers) 
 - Keep history of status changes
 - Provide latest view of services statuses
 - Reports status changes via notifications (EMail, MSTeams)
@@ -62,7 +62,7 @@ All tests are run by sbt command
 | `sbt jacoco`      | Jacoco code coverage | Runs all possible tests with code coverage - i.e. you need environment setup for all previous unit/integration tests   |
 
 ## Rest API
-Can be found on [wiki - REST-API](https://github.com/absa-group/status-board/wiki/REST-API)
+Can be found on [wiki - REST-API](https://github.com/AbsaOSS/StatusBoard/wiki/REST-API)
 
 or directly accessed on swagger pages `GET /docs`
 
