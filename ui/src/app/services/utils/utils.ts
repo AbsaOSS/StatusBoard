@@ -83,7 +83,7 @@ export class Utils {
     const lastSeen = new Date(status.lastSeen);
     const lastSeenStr = formatTime(lastSeen);
 
-    const duration = this.getDurationString(firstSeen, lastSeen)
+    const duration = this.getDurationString(firstSeen, lastSeen);
 
     return `${firstSeenStr} - ${lastSeenStr} [${duration}]`;
   }
@@ -100,7 +100,7 @@ export class Utils {
     const lastSeen = new Date(status.lastSeen);
     const lastSeenStr = formatTime(lastSeen);
 
-    const duration = this.getDurationString(firstSeen, lastSeen)
+    const duration = this.getDurationString(firstSeen, lastSeen);
 
     return `First seen in this state: ${firstSeenStr} <br>Last seen in this state: ${lastSeenStr}<br>Observed in this state for: ${duration}`;
   }

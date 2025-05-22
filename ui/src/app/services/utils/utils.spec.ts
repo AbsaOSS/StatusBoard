@@ -47,7 +47,9 @@ describe('UtilsService', () => {
       firstSeen: '1989-05-20T10:00:00Z',
       lastSeen: '1989-05-29T11:23:00Z',
     } as unknown as RefinedStatus;
-    expect(utils.getTimeFrameToolTip(testStatus)).toBe('First seen in this state: 1989-05-20 10:00 UTC <br>Last seen in this state: 1989-05-29 11:23 UTC<br>Observed in this state for: 9 days 1 hour 23 minutes');
+    expect(utils.getTimeFrameToolTip(testStatus)).toBe(
+      'First seen in this state: 1989-05-20 10:00 UTC <br>Last seen in this state: 1989-05-29 11:23 UTC<br>Observed in this state for: 9 days 1 hour 23 minutes'
+    );
   });
 
   it('applyFilter should filter properly', () => {
