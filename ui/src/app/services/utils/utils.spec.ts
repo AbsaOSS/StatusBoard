@@ -30,12 +30,24 @@ describe('UtilsService', () => {
     expect(utils.getIcon(RawStatusColor.BLACK)).toBe('toast-info');
   });
 
-  it('getTimeFrame should properly get time frame', () => {
+  it('getDurationString should properly get durationString', () => {
     const testStatus: RefinedStatus = {
       firstSeen: '1989-05-20T10:00:00Z',
       lastSeen: '1989-05-29T11:23:00Z',
     } as unknown as RefinedStatus;
     expect(utils.getTimeFrame(testStatus)).toBe('1989-05-20 10:00 UTC - 1989-05-29 11:23 UTC [9 days 1 hour 23 minutes]');
+  });
+
+  it('getTimeFrame should properly get time frame', () => {
+    expect(utils.getDurationString(new Date('1989-05-20T10:00:00Z'), new Date('1989-05-29T11:23:00Z'))).toBe('9 days 1 hour 23 minutes');
+  });
+
+  it('getTimeFrameToolTip should properly get time frame tooltip', () => {
+    const testStatus: RefinedStatus = {
+      firstSeen: '1989-05-20T10:00:00Z',
+      lastSeen: '1989-05-29T11:23:00Z',
+    } as unknown as RefinedStatus;
+    expect(utils.getTimeFrameToolTip(testStatus)).toBe('First seen in this state: 1989-05-20 10:00 UTC <br>Last seen in this state: 1989-05-29 11:23 UTC<br>Observed in this state for: 9 days 1 hour 23 minutes');
   });
 
   it('applyFilter should filter properly', () => {

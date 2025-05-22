@@ -46,7 +46,7 @@
       @if (card()!.status.maintenanceMessage) {
         <div class="status">{{ card()!.status.maintenanceMessage }}</div>
       }
-      <div class="timeframe">{{ card()!.derived.timeFrame }}</div>
+      <div class="timeframe" cpsTooltip="{{ card()!.derived.timeFrameToolTip }}">{{ card()!.derived.timeFrame }}</div>
       @if (showHistoryBar()) {
         <div class="historyBar">
           @for (subCard of history(); track subCard.id) {

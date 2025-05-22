@@ -19,5 +19,6 @@ export interface ServiceCard {
     icon: string;
     cssColor: string;
     timeFrame: string;
+    timeFrameToolTip: string;
   };
 }
