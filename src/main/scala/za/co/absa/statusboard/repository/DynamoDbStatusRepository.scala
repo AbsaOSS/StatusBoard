@@ -44,7 +44,9 @@ class DynamoDbStatusRepository(dynamodbClient: DynamoDbClient, tableName: String
     ZIO.logError(s"$msg: ${error.getMessage}") *> ZIO.fail(GeneralDatabaseError(s"$msg: ${error.getMessage}"))
   }
 
-  override def getLatestStatus(environment: String, serviceName: String): IO[DatabaseError, RefinedStatus] = getLatestStatus(fullServiceName(environment, serviceName))
+  override def getLatestStatus(environment: String, serviceName: String): IO[DatabaseError, RefinedStatus] = getLatestStatus(fullServiceName(environment, serviceName), onlyNotified = false)
+
+  override def getLatestNotifiedStatus(environment: String, serviceName: String): IO[DatabaseError, RefinedStatus] = getLatestStatus(fullServiceName(environment, serviceName), onlyNotified = true)
 
   override def getAllStatuses(environment: String, serviceName: String): IO[DatabaseError, Seq[RefinedStatus]] = {
     for {
@@ -71,7 +73,7 @@ class DynamoDbStatusRepository(dynamodbClient: DynamoDbClient, tableName: String
       scanResponse <- ZIO.attempt(dynamodbClient.scan(scanRequest))
       scanResponseItems <- ZIO.attempt(scanResponse.items().asScala.toSeq)
       fullServiceNames <- ZIO.foreach(scanResponseItems)(item => ZIO.succeed(sAttributeValueToString(item, FullServiceName)))
-      result <- ZIO.foreach(fullServiceNames.toSet)(getLatestStatus)
+      result <- ZIO.foreach(fullServiceNames.toSet)(fullServiceName => getLatestStatus(fullServiceName, onlyNotified = false))
     } yield result.filter(_.status match {
       case RawStatus.Black() => false
       case _ => true
@@ -112,15 +114,31 @@ class DynamoDbStatusRepository(dynamodbClient: DynamoDbClient, tableName: String
     ZIO.logError(s"$msg: ${error.getMessage}") *> ZIO.fail(GeneralDatabaseError(s"$msg: ${error.getMessage}"))
   }
 
-  private def getLatestStatus(fullServiceName: String): IO[DatabaseError, RefinedStatus] = {
+  private def getLatestStatus(fullServiceName: String, onlyNotified: Boolean): IO[DatabaseError, RefinedStatus] = {
     for {
       request <- ZIO.attempt {
-        QueryRequest
+        val expressionValues = if (onlyNotified)
+          Map(
+            s":$FullServiceName" -> sAttributeValueFromString(fullServiceName),
+            s":$NotificationSent" -> boolAttributeValueFromBoolean(true)
+          )
+        else
+          Map(
+            s":$FullServiceName" -> sAttributeValueFromString(fullServiceName)
+          )
+
+        val baseBuilder = QueryRequest
           .builder()
           .tableName(tableName)
           .keyConditionExpression(s"$FullServiceName = :$FullServiceName")
-          .expressionAttributeValues(Map(s":$FullServiceName" -> sAttributeValueFromString(fullServiceName)).asJava)
-          .scanIndexForward(false)
+          .expressionAttributeValues(expressionValues.asJava)
+
+        val maybeFilteredBuilder = if (onlyNotified)
+          baseBuilder.filterExpression(s"$NotificationSent = :$NotificationSent")
+        else
+          baseBuilder
+
+        maybeFilteredBuilder.scanIndexForward(false)
           .limit(1)
           .build()
       }
