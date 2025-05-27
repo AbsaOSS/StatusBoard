@@ -60,6 +60,11 @@ object DynamoDbStatusRepositoryDynamoDBIntegrationTests extends ConfigProviderSp
           failsWithA[RecordNotFoundDatabaseError]
         )
       },
+      test("getLatestNotifiedStatus should retrieve nothing when no state exist") {
+        assertZIO(StatusRepository.getLatestNotifiedStatus("TestEnv", "NonExistentService").exit)(
+          failsWithA[RecordNotFoundDatabaseError]
+        )
+      },
       test("getAllStatuses should retrieve nothing when no state exist") {
         assertZIO(StatusRepository.getAllStatuses("TestEnv", "NonExistentService"))(
           equalTo(List.empty[RefinedStatus])
@@ -91,6 +96,11 @@ object DynamoDbStatusRepositoryDynamoDBIntegrationTests extends ConfigProviderSp
           equalTo(refinedStatus)
         )
       },
+      test("getLatestNotifiedStatus should retrieve nothing when the only status is not notified") {
+        assertZIO(StatusRepository.getLatestNotifiedStatus(refinedStatus.env, refinedStatus.serviceName).exit)(
+          failsWithA[RecordNotFoundDatabaseError]
+        )
+      },
       test("getAllStatuses should retrieve last status") {
         assertZIO(StatusRepository.getAllStatuses(refinedStatus.env, refinedStatus.serviceName))(
           equalTo(List(refinedStatus))
@@ -106,6 +116,11 @@ object DynamoDbStatusRepositoryDynamoDBIntegrationTests extends ConfigProviderSp
       },
       test("getLatestStatus should retrieve single last status") {
         assertZIO(StatusRepository.getLatestStatus(refinedStatusUpdated.env, refinedStatusUpdated.serviceName))(
+          equalTo(refinedStatusUpdated)
+        )
+      },
+      test("getLatestNotifiedStatus should retrieve last notified status") {
+        assertZIO(StatusRepository.getLatestNotifiedStatus(refinedStatusUpdated.env, refinedStatusUpdated.serviceName))(
           equalTo(refinedStatusUpdated)
         )
       },

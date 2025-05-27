@@ -15,25 +15,35 @@
  */
 
 package za.co.absa.statusboard.notification.deciders
-import za.co.absa.statusboard.model.RawStatus.Green
-import za.co.absa.statusboard.model.{NotificationCondition, RawStatus, RefinedStatus}
+import za.co.absa.statusboard.model.{NotificationCondition, RefinedStatus}
+import za.co.absa.statusboard.repository.StatusRepository
 import zio.{UIO, ZIO, ZLayer}
 
 import java.time.Duration
 
-object DurationBasedNotificationDeciderImpl extends DurationBasedNotificationDecider {
+class DurationBasedNotificationDeciderImpl(statusRepository: StatusRepository) extends DurationBasedNotificationDecider {
   override def shouldNotify(condition: NotificationCondition.DurationBased, status: RefinedStatus): UIO[Boolean] = {
     ZIO.succeed {
       !status.notificationSent &&
-        isNotGreen(status.status) &&
         (!status.status.intermittent || condition.secondsInState < Duration.between(status.firstSeen, status.lastSeen).toSeconds)
+    }.flatMap { baseShouldNotify =>
+      if (!baseShouldNotify) ZIO.succeed(false)
+      else lastNotificationHasSameColor(status).map(!_)
     }
   }
 
-  private def isNotGreen(status: RawStatus): Boolean = status match {
-    case Green(_) => false
-    case _ => true
+  private def lastNotificationHasSameColor(status: RefinedStatus): UIO[Boolean] = {
+    statusRepository.getLatestNotifiedStatus(status.env, status.serviceName).foldZIO(
+      _ => ZIO.succeed(false),
+      lastNotifiedStatus => ZIO.succeed(lastNotifiedStatus.status.color == status.status.color)
+    )
   }
+}
 
-  val layer: ZLayer[Any, Throwable, DurationBasedNotificationDecider] = ZLayer.succeed(DurationBasedNotificationDeciderImpl)
+object DurationBasedNotificationDeciderImpl {
+  val layer: ZLayer[StatusRepository, Throwable, DurationBasedNotificationDecider] = ZLayer {
+    for {
+      statusRepository <- ZIO.service[StatusRepository]
+    } yield new DurationBasedNotificationDeciderImpl(statusRepository)
+  }
 }

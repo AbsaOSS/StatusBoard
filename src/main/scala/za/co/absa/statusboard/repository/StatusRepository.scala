@@ -46,6 +46,16 @@ trait StatusRepository {
   def getLatestStatus(environment: String, serviceName: String): IO[DatabaseError, RefinedStatus]
 
   /**
+   *  Retrieves the status of latest notification of a given service.
+   *
+   *  @param environment Environment
+   *  @param serviceName Service name
+   *  @return A [[zio.IO]] that will produce the latest [[za.co.absa.statusboard.model.RefinedStatus]] for the service
+   *         or a [[za.co.absa.statusboard.model.AppError.DatabaseError]] if an error occurs.
+   */
+  def getLatestNotifiedStatus(environment: String, serviceName: String): IO[DatabaseError, RefinedStatus]
+
+  /**
    *  Retrieves full status history for a given service.
    *
    *  @param environment Environment
