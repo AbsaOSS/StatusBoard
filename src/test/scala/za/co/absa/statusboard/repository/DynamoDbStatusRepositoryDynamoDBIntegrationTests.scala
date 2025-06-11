@@ -21,7 +21,7 @@ import za.co.absa.statusboard.config.RepositoriesConfig
 import za.co.absa.statusboard.model.AppError.DatabaseError.RecordNotFoundDatabaseError
 import za.co.absa.statusboard.model.{RawStatus, RefinedStatus}
 import za.co.absa.statusboard.providers.DynamoDbProvider
-import za.co.absa.statusboard.testUtils.TestData.rawStatusRed
+import za.co.absa.statusboard.testUtils.TestData.{rawStatusGreen, rawStatusRed}
 import za.co.absa.statusboard.testUtils.{ConfigProviderSpec, TestData}
 import za.co.absa.statusboard.utils.DynamoDbUtils.DynamoDbExtensions
 import zio._
@@ -51,7 +51,6 @@ object DynamoDbStatusRepositoryDynamoDBIntegrationTests extends ConfigProviderSp
   private val refinedStatusDeadService: RefinedStatus = refinedStatus.copy(
     status = RawStatus.Black(),
     serviceName = "Dead Test Service")
-
 
   override def spec: Spec[TestEnvironment with Scope, Any] = {
     suite("DynamoDbStatusRepositorySuite")(
@@ -167,6 +166,37 @@ object DynamoDbStatusRepositoryDynamoDBIntegrationTests extends ConfigProviderSp
         assertZIO(StatusRepository.getLatestStatusOfAllActiveConfigurations())(
           equalTo(Set(refinedStatusAnotherService, refinedStatusAnotherRenamed))
         )
+      },
+      test("BUG #10 Latest Notified Retrieval 2025-06-11") {
+        val refinedStatus_A: RefinedStatus = RefinedStatus(
+          serviceName = "BugService",
+          env = "BUG #10",
+          status = RawStatus.Green("1 FAIL"),
+          maintenanceMessage = "",
+          firstSeen = Instant.parse("2025-05-21T12:14:42.030Z"),
+          lastSeen = Instant.parse("2025-05-21T12:16:31.711Z"),
+          notificationSent = true
+        )
+
+        val refinedStatus_B: RefinedStatus = refinedStatus_A.copy(
+          status = RawStatus.Green("2 OK"),
+          firstSeen = Instant.parse("2025-05-21T12:17:08.006Z"),
+          lastSeen = Instant.parse("2025-06-11T02:00:21.191Z"),
+          notificationSent = true
+        )
+
+        val refinedStatus_C: RefinedStatus = refinedStatus_A.copy(
+          status = RawStatus.Red("3 FAIL", true),
+          firstSeen = Instant.parse("2025-06-11T02:10:41.219Z"),
+          lastSeen = Instant.parse("2025-06-11T02:10:41.219Z"),
+          notificationSent = false
+        )
+        for {
+          _ <- StatusRepository.createOrUpdate(refinedStatus_A)
+          _ <- StatusRepository.createOrUpdate(refinedStatus_B)
+          _ <- StatusRepository.createOrUpdate(refinedStatus_C)
+          result <- StatusRepository.getLatestNotifiedStatus("BUG #10", "BugService")
+        } yield assert(result.status)(equalTo(RawStatus.Green("2 OK")))
       }
     ) @@
       TestAspect.sequential @@

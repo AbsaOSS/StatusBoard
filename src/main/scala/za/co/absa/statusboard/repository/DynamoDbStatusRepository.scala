@@ -139,7 +139,7 @@ class DynamoDbStatusRepository(dynamodbClient: DynamoDbClient, tableName: String
           baseBuilder
 
         maybeFilteredBuilder.scanIndexForward(false)
-          .limit(1)
+          // no limit - as it would be applied before the filter
           .build()
       }
       response <- ZIO.attempt(dynamodbClient.query(request))
