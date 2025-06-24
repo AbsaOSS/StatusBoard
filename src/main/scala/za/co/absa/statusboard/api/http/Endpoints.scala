@@ -29,23 +29,34 @@ import za.co.absa.statusboard.model.{ErrorResponse, RawStatus, RefinedStatus, Se
 import za.co.absa.statusboard.model.ApiResponse.{MultiApiResponse, SingleApiResponse}
 
 object Endpoints {
+  implicit class NoCachePublicEndpoint[I, E, O, R](endpoint: PublicEndpoint[I, E, O, R]) {
+    def noCache: PublicEndpoint[I, E, O, R] =
+      endpoint
+        .out(header("Cache-Control", "no-cache, no-store, must-revalidate"))
+        .out(header("Pragma", "no-cache"))
+        .out(header("Expires", "0"))
+  }
+
   val zioMetrics: PublicEndpoint[Unit, Unit, String, Any] = endpoint
     .get
     .in(ZioMetrics)
     .out(stringBody)
     .out(statusCode(StatusCode.Ok))
+    .noCache
 
   val health: PublicEndpoint[Unit, Unit, String, Any] = endpoint
     .get
     .in(Health)
     .out(stringBody)
     .out(statusCode(StatusCode.Ok))
+    .noCache
 
   val getServiceConfigurations: PublicEndpoint[Option[Boolean], ErrorResponse, MultiApiResponse[ServiceConfiguration], Any] = endpoint
     .get
     .in(Api / V1 / Configurations).in(query[Option[Boolean]](IncludeHidden))
     .out(jsonBody[MultiApiResponse[ServiceConfiguration]])
     .out(statusCode(StatusCode.Ok))
+    .noCache
     .errorOut(
       oneOf[ErrorResponse](
         badRequest,
@@ -58,6 +69,7 @@ object Endpoints {
     .in(Api / V1 / Configurations / path[String](Environment) / path[String](ServiceName))
     .out(jsonBody[SingleApiResponse[ServiceConfiguration]])
     .out(statusCode(StatusCode.Ok))
+    .noCache
     .errorOut(
       oneOf[ErrorResponse](
         badRequest,
@@ -71,6 +83,7 @@ object Endpoints {
     .in(Api / V1 / Configurations / path[String](Environment) / path[String](ServiceName) / Dependencies)
     .out(jsonBody[MultiApiResponse[ServiceConfigurationReference]])
     .out(statusCode(StatusCode.Ok))
+    .noCache
     .errorOut(
       oneOf[ErrorResponse](
         badRequest,
@@ -84,6 +97,7 @@ object Endpoints {
     .in(Api / V1 / Configurations / path[String](Environment) / path[String](ServiceName) / Dependents)
     .out(jsonBody[MultiApiResponse[ServiceConfigurationReference]])
     .out(statusCode(StatusCode.Ok))
+    .noCache
     .errorOut(
       oneOf[ErrorResponse](
         badRequest,
@@ -200,6 +214,7 @@ object Endpoints {
     .in(Api / V1 / Statuses / path[String](Environment) / path[String](ServiceName) / Latest)
     .out(jsonBody[SingleApiResponse[RefinedStatus]])
     .out(statusCode(StatusCode.Ok))
+    .noCache
     .errorOut(
       oneOf[ErrorResponse](
         badRequest,
@@ -213,6 +228,7 @@ object Endpoints {
     .in(Api / V1 / Statuses / path[String](Environment) / path[String](ServiceName))
     .out(jsonBody[MultiApiResponse[RefinedStatus]])
     .out(statusCode(StatusCode.Ok))
+    .noCache
     .errorOut(
       oneOf[ErrorResponse](
         badRequest,
@@ -225,6 +241,7 @@ object Endpoints {
     .in(Api / V1 / Statuses)
     .out(jsonBody[MultiApiResponse[RefinedStatus]])
     .out(statusCode(StatusCode.Ok))
+    .noCache
     .errorOut(
       oneOf[ErrorResponse](
         badRequest,
