@@ -40,7 +40,7 @@ object DecodeFailureHandlerImpl extends DecodeFailureHandler[Task] {
         val message = if (sc == StatusCode.Unauthorized) "Unauthorized" else ctx.failure match {
           case DecodeResult.Missing => s"Decoding error - missing value."
           case DecodeResult.Multiple(vs) => s"Decoding error - $vs."
-          case DecodeResult.Error(original, message) => s"Decoding error '$message' for an input value '$original'."
+          case DecodeResult.Error(original, errorMessage) => s"Decoding error '$errorMessage' for an input value '$original'."
           case DecodeResult.Mismatch(_, actual) => s"Unexpected value '$actual'."
           case DecodeResult.InvalidValue(errors) => s"Validation error - $errors."
         }
