@@ -17,6 +17,7 @@
 package za.co.absa.statusboard.api.http
 
 import io.circe.generic.auto._
+import org.slf4j.LoggerFactory
 import sttp.model.StatusCode
 import sttp.monad.MonadError
 import sttp.tapir.DecodeResult
@@ -31,16 +32,21 @@ import za.co.absa.statusboard.model.ErrorResponse.BadRequestResponse
 import zio.Task
 
 object DecodeFailureHandlerImpl extends DecodeFailureHandler[Task] {
+  private val logger = LoggerFactory.getLogger(getClass)
+
   override def apply(ctx: DecodeFailureContext)(implicit monad: MonadError[Task]): Task[Option[ValuedEndpointOutput[_]]] = {
     monad.unit(
       respond(ctx).map { case (sc, hs) =>
         val message = if (sc == StatusCode.Unauthorized) "Unauthorized" else ctx.failure match {
           case DecodeResult.Missing => s"Decoding error - missing value."
           case DecodeResult.Multiple(vs) => s"Decoding error - $vs."
-          case DecodeResult.Error(original, _) => s"Decoding error for an input value '$original'."
+          case DecodeResult.Error(original, errorMessage) => s"Decoding error '$errorMessage' for an input value '$original'."
           case DecodeResult.Mismatch(_, actual) => s"Unexpected value '$actual'."
           case DecodeResult.InvalidValue(errors) => s"Validation error - $errors."
         }
+
+        logger.error(s"Request decoding failed: $message")
+
         val errorResponse = BadRequestResponse(message)
         ValuedEndpointOutput(statusCode.and(headers).and(jsonBody[BadRequestResponse]), (sc, hs, errorResponse))
       }
