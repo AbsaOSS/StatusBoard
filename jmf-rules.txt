@@ -154,11 +154,9 @@
 # PROJECT RULES
 # ─────────────────────────────────────────────────────────────────────────────
 
+# Options for method filtering:
 # *.api.http*#*
 # *.config*#*
 # za.co.absa.statusboard.Main*#*
 # za.co.absa.statusboard.repository.DynamoDb*#*
 # za.co.absa.statusboard.utils.DynamoDb*#*
-
-
-
