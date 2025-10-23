@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package za.co.absa.statusboard.providers
+//package za.co.absa.statusboard.providers
+//
+//import za.co.absa.statusboard.testUtils.ConfigProviderSpec
+//import zio._
+//import zio.config.magnolia.deriveConfig
+//import zio.test.Assertion.isUnit
+//import zio.test._
 
-import za.co.absa.statusboard.testUtils.ConfigProviderSpec
-import zio._
-import zio.config.magnolia.deriveConfig
-import zio.test.Assertion.isUnit
-import zio.test._
-
-// We don't have testing SMTP and jacoco can't be set to ignore unit/integration test
+// We don't have testing SMTP option
 //object EmailProviderImplSMTPIntegrationTests extends ConfigProviderSpec {
 //  override def spec: Spec[TestEnvironment with Scope, Any] = {
 //    suite("EmailProviderImplSuite")(

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 import Dependencies.*
-import JacocoSetup.*
-
 import scala.collection.Seq
 
 ThisBuild / scalaVersion     := Versions.scala213
@@ -57,8 +55,7 @@ lazy val root = (project in file("."))
     Test / parallelExecution := false,
     (assembly / test) := {},
     publish := {},
-    jacocoReportSettings := jacocoSettings(scalaVersion.value, "status-board"),
-    jacocoExcludes := jacocoProjectExcludes()
   )
   .enablePlugins(AutomateHeaderPlugin)
   .enablePlugins(AssemblyPlugin)
+  .enablePlugins(FilteredJacocoAgentPlugin)

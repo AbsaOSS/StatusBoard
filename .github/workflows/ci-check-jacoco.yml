@@ -1,0 +1,61 @@
+name: JaCoCo Report
+
+on:
+  pull_request:
+    branches: [ master ]
+    types: [ opened, edited, synchronize, reopened ]
+
+env:
+  scalaLong: 2.13.11
+  scalaShort: "2.13"
+  coverage-overall: 80.0
+  coverage-changed-files: 80.0
+  coverage-per-changed-file: 0.0
+  check-overall-coverages: true
+
+jobs:
+  jacoco-report:
+    name: JaCoCo Report
+    runs-on: ubuntu-latest
+    services:
+      dynamodb-local:
+        image: "amazon/dynamodb-local:latest"
+        ports:
+          - "8000:8000"
+
+    steps:
+      - name: Checkout code
+        id: code-checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup JVM and SBT
+        id: jvm-setup
+        uses: coursier/setup-action@v1.3.5
+        with:
+          jvm: corretto:21.0.2.13.1
+          apps: sbt
+
+      - name: Build and run tests with test coverage
+        id: jacoco-run
+        continue-on-error: true
+        run: sbt jacoco
+        env:
+          AWS_REGION: "ignored"
+          AWS_ACCESS_KEY_ID: "ignored"
+          AWS_SECRET_ACCESS_KEY: "ignored"
+
+      - name: Publish JaCoCo Report in PR comments
+        id: jacoco
+        uses: MoranaApps/jacoco-report@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          paths: |
+            **/target/**/jacoco/report/jacoco.xml
+          sensitivity: "detail"
+          comment-mode: 'single'
+          min-coverage-overall: ${{ env.coverage-overall }}
+          min-coverage-changed-files: ${{ env.coverage-changed-files }}
+          min-coverage-per-changed-file: ${{ env.coverage-per-changed-file }}
+          skip-unchanged: false

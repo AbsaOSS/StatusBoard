@@ -7,3 +7,8 @@ alias test=; testOnly *UnitTests
 alias testDynamo=; testOnly *DynamoDBIntegrationTests
 alias testSMTP=; testOnly *SMTPIntegrationTests
 alias testMSTeams=; testOnly *MSTeamsIntegrationTests
+
+# JaCoCo Aliases
+alias jacoco=; jacocoOn; +clean; +test; jacocoReportAll; jacocoOff
+alias jacocoOff=; set every jacocoPluginEnabled := false
+alias jacocoOn=; set every jacocoPluginEnabled := true
