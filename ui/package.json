@@ -30,7 +30,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@primeng/themes": "^19.0.8",
-    "cps-ui-kit": "^19.1.0",
+    "cps-ui-kit": "^19.4.0",
     "lodash-es": "^4.17.21",
     "primeng": "^19.0.8",
     "rxjs": "~7.8.2",
