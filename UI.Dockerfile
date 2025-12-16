@@ -9,13 +9,16 @@
 
 ARG BASE_IMAGE=nginx
 
-
 FROM $BASE_IMAGE
 LABEL org.opencontainers.image.authors="ABSA"
 
 # Project should be build locally by running `npm run build`
 COPY ./ui/dist/ui/browser/ /usr/share/nginx/html
 COPY ./ui/conf/nginx.conf /etc/nginx/conf.d/default.conf
+
+RUN chmod -R 777 /var/cache/nginx /var/run
+
+USER nginx
 
 EXPOSE 4200
 
