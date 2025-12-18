@@ -50,6 +50,12 @@ do \
     keytool -import -file $file -alias $file -cacerts -storepass changeit -noprompt; \
 done
 
+RUN chmod 755 /opt/app && \
+    chmod 644 /opt/app/status-board-assembly.jar && \
+    chmod 755 /opt/app/entrypoint.sh
+
+USER 10001:10001
+
 EXPOSE $PORT
 WORKDIR /opt/app
 ENTRYPOINT ["./entrypoint.sh"]
