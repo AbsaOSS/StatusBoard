@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MultiApiResponse, SingleApiResponse } from '../../models/api-response';
@@ -12,10 +12,10 @@ import { ServiceConfigurationReference } from '../../models/service-configuratio
   providedIn: 'root',
 })
 export class BackendService {
+  private http = inject(HttpClient);
+
   private readonly apiStatusesUrl = `${environment.apiUrl}/api/v1/statuses`;
   private readonly apiConfigurationsUrl = `${environment.apiUrl}/api/v1/configurations`;
-
-  constructor(private http: HttpClient) {}
 
   getConfiguration(env: string, serviceName: string): Observable<ServiceConfiguration> {
     return this.http

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HierarchicalServiceCardWithHistory, ServiceCard, ServiceCardWithHistory } from '../../models/service-card';
@@ -20,10 +20,8 @@ enum GraphDirection {
   providedIn: 'root',
 })
 export class CardService {
-  constructor(
-    private utils: Utils,
-    private repository: RepositoryService
-  ) {}
+  private utils = inject(Utils);
+  private repository = inject(RepositoryService);
 
   // Cards for latest statuses of visible ServiceConfigurations
   // -> Ordered by Environment × ServiceName alphabetically
