@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { HierarchicalServiceCard, ServiceCard } from '../../models/service-card';
-import { CpsDialogConfig, CpsDialogRef } from 'cps-ui-kit';
+import { CpsDialogConfig } from 'cps-ui-kit';
 
 @Component({
   selector: 'app-service-dependency-graph',
@@ -9,7 +9,6 @@ import { CpsDialogConfig, CpsDialogRef } from 'cps-ui-kit';
   standalone: false,
 })
 export class DependencyGraphComponent {
-  private _dialogRef = inject(CpsDialogRef);
   private _config = inject(CpsDialogConfig);
 
   dependenciesCards: HierarchicalServiceCard[] = [];

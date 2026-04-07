@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ServiceCard } from '../../models/service-card';
-import { CpsDialogConfig, CpsDialogRef } from 'cps-ui-kit';
+import { CpsDialogConfig } from 'cps-ui-kit';
 
 @Component({
   selector: 'app-service-card-details',
@@ -9,7 +9,6 @@ import { CpsDialogConfig, CpsDialogRef } from 'cps-ui-kit';
   standalone: false,
 })
 export class CardDetailsComponent {
-  private _dialogRef = inject(CpsDialogRef);
   private _config = inject(CpsDialogConfig);
 
   card: ServiceCard | null = null;
