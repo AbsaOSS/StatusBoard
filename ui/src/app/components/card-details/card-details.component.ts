@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ServiceCard } from '../../models/service-card';
-import { CpsDialogConfig, CpsDialogRef } from 'cps-ui-kit';
+import { CpsDialogConfig } from 'cps-ui-kit';
 
 @Component({
   selector: 'app-service-card-details',
@@ -9,12 +9,11 @@ import { CpsDialogConfig, CpsDialogRef } from 'cps-ui-kit';
   standalone: false,
 })
 export class CardDetailsComponent {
+  private _config = inject(CpsDialogConfig);
+
   card: ServiceCard | null = null;
 
-  constructor(
-    private _dialogRef: CpsDialogRef,
-    private _config: CpsDialogConfig
-  ) {
+  constructor() {
     this.card = this._config.data.card;
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, concatMap, forkJoin, map, Observable, of } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { RepositoryService } from '../repository/repository.service';
@@ -18,12 +18,10 @@ enum GraphDirection {
   providedIn: 'root',
 })
 export class RefreshService {
-  private readonly refreshPending = new BehaviorSubject<boolean>(false);
+  private backend = inject(BackendService);
+  private repository = inject(RepositoryService);
 
-  constructor(
-    private backend: BackendService,
-    private repository: RepositoryService
-  ) {}
+  private readonly refreshPending = new BehaviorSubject<boolean>(false);
 
   get refreshPending$(): Observable<boolean> {
     return this.refreshPending.asObservable();

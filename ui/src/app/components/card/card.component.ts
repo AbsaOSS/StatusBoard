@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { ServiceCard, ServiceCardWithHistory } from '../../models/service-card';
 import { faBug, faCircleQuestion, faCircleInfo, faHouseChimney, faBook, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -15,6 +15,10 @@ import { CardDetailsComponent } from '../card-details/card-details.component';
   standalone: false,
 })
 export class CardComponent {
+  private dialogService = inject(CpsDialogService);
+  private cardService = inject(CardService);
+  private refreshService = inject(RefreshService);
+
   card = input<ServiceCard>();
   showButtons = input<boolean>(false);
   showHistoryBar = input(false, {
@@ -36,12 +40,6 @@ export class CardComponent {
   icoGitHub = faGithub;
 
   private historyLen: number = 10;
-
-  constructor(
-    private dialogService: CpsDialogService,
-    private cardService: CardService,
-    private refreshService: RefreshService
-  ) {}
 
   showDependencyGraph() {
     const env = this.card()!.configuration.env;

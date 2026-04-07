@@ -4,7 +4,9 @@
 </div>
 
 <div class="service-card-container">
-  <cps-loader *ngIf="isLoading()" [fullScreen]="true"></cps-loader>
+  @if (isLoading()) {
+    <cps-loader [fullScreen]="true"></cps-loader>
+  }
   @if (cards().length === 0) {
     <div class="no-services-message">
       <p>No services to display.</p>

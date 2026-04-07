@@ -5,6 +5,6 @@
     "sourceMap": false,
     "types": ["cypress", "node"]
   },
-  "include": ["cypress/**/*.ts", "cypress/**/*.js"],
+  "include": ["cypress.config.ts", "cypress/**/*.ts", "cypress/**/*.js"],
   "exclude": ["node_modules", "**/*.spec-broken.ts", "**/*.spec.broken.ts", "**/*.spec.ts"]
 }

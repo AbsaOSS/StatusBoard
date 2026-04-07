@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, model, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, model, signal, ViewChild, inject } from '@angular/core';
 import { CpsNotificationService } from 'cps-ui-kit';
 import packageJson from '../../package.json';
 import { StatusHistoryComponent } from './components/status-history/status-history.component';
@@ -24,6 +24,13 @@ const SUCCESS_FETCHING_DATA = 'Data fetched successfully';
   standalone: false,
 })
 export class AppComponent implements AfterViewInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private utils = inject(Utils);
+  private cardService = inject(CardService);
+  private refreshService = inject(RefreshService);
+  private notificationService = inject(CpsNotificationService);
+
   @ViewChild(StatusHistoryComponent) serviceHistoryComponent!: StatusHistoryComponent;
   @ViewChild(StatusListComponent) serviceStatusComponent!: StatusListComponent;
 
@@ -44,15 +51,6 @@ export class AppComponent implements AfterViewInit {
   icoTeam = faPeopleGroup;
   icoJoin = faUserPlus;
   icoGitHub = faGithub;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private utils: Utils,
-    private cardService: CardService,
-    private refreshService: RefreshService,
-    private notificationService: CpsNotificationService
-  ) {}
 
   ngAfterViewInit() {
     this.route.queryParams.subscribe(params => {

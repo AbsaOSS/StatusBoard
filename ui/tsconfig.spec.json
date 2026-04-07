@@ -6,7 +6,10 @@
     "outDir": "./out-tsc/spec",
     "types": ["jest", "node"],
     "esModuleInterop": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": ["src/test.ts", "src/**/*.spec.ts", "src/**/*.d.ts"]
 }
