@@ -64,6 +64,7 @@ jobs:
             - { title: Bugfixes 🛠, label: bug, order: 30 }
             - { title: Infrastructure ⚙️, label: infrastructure, order: 40 }
             - { title: UI/UX 🎨, label: UI/UX, order: 50 }
+            - { title: Entries to skip 🚫, label: no RN, hidden: true, order: 99 }
           warnings: true
           print-empty-chapters: false
           row-format-issue: '{type}: {number} _{title}_ by {developers} in {pull-requests}'
