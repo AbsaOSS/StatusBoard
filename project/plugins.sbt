@@ -18,3 +18,4 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.0")
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.10.0")
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.12") // To add release plugin
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.10")    // To build the server module as a jar file
+addSbtPlugin("io.github.moranaapps" % "jacoco-method-filter-sbt" % "2.1.1")

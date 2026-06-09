@@ -55,6 +55,9 @@ lazy val root = (project in file("."))
     Test / parallelExecution := false,
     (assembly / test) := {},
     publish := {},
+    jmfReportFile   := Some(target.value / "jmf-report.json"),
+    jmfReportFormat := "json",
   )
   .enablePlugins(AutomateHeaderPlugin)
   .enablePlugins(AssemblyPlugin)
+  .enablePlugins(JacocoFilterPlugin)

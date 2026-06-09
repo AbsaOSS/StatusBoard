@@ -18,6 +18,7 @@ StatusBoard is a real-time monitoring platform for tracking service health statu
 - **Database**: AWS DynamoDB for persistence
 - **Testing**: ZIO Test framework
 - **Code Coverage**: Jacoco
+- Compiler warnings treated as errors where configured; coverage ≥ 80% via JMF-enabled JaCoCo (excluding methods listed in `jmf-rules.txt`).
 
 ### Frontend (TypeScript)
 - **Framework**: Angular 19
@@ -165,6 +166,29 @@ The checker system uses a polymorphic design:
 - Unit tests: `npm run test` (Jest via `jest.config.ts`)
 - E2E tests: `npm run e2e` (Cypress via `cypress.json`)
 - Test coverage: `npm run test:coverage`
+
+## Coverage Filtering (JMF)
+
+### When a unit test adds value — write one
+- The method has any logic of its own.
+
+### When to add to `jmf-rules.txt` instead of writing a unit test
+- The body is a single call with no own logic: it forwards to another overload, calls its non-deprecated replacement, returns a field, or wraps a constructor with no transformation.
+- **Litmus test**: "Does this method have any logic of its own?" — No → add a JMF rule instead of a test.
+
+### Global rule collision check (CRITICAL)
+- When adding any new method, check whether its name matches a pattern in the `# GLOBAL RULES` section of `jmf-rules.txt`.
+- If a method name matches a global rule AND the method contains domain logic: immediately add an INCLUDE rescue rule (`+FQCN#method(*)`) in the `# INCLUDE RULES` section of `jmf-rules.txt`.
+- High-risk method names (most common collisions): `apply()`, `toString()`, `equals()`, `copy()`, `name()`, `groups()`, `optionalAttributes()`. See the `# GLOBAL RULES` section of `jmf-rules.txt` for the full list.
+- Rationale: broad global rules are designed for compiler-generated boilerplate and can silently suppress coverage for domain methods. INCLUDE rules rescue specific methods from broad exclusions.
+- Example: if adding `def apply(id: String): Record`, add `+*Record$#apply(*)  id:keep-record-factory` to the `# INCLUDE RULES` section to rescue it from the `*$*#apply(*)` global rule.
+
+### JMF drift check (review rule)
+- When modifying a method that already appears in `jmf-rules.txt`, verify its body still qualifies for exclusion.
+- If own logic has been added since the rule was created, remove the JMF rule and write a unit test instead.
+
+### Cannot add JMF rules for
+- Methods with branching logic, error handling, or non-trivial transformations — write a unit test instead.
 
 ## Configuration
 - Main config: `config. conf` (HOCON format)
