@@ -7,11 +7,10 @@ on:
 env:
   scalaLong: 2.13.11
   scalaShort: "2.13"
-  REPORT_GROUPS: |
-    - name: statusboard
-      paths:
-        - '**/target/**/jacoco-report/jacoco.xml'
-      thresholds: '77*80*60'
+  coverage-overall: 77.0
+  coverage-changed-files: 80.0
+  coverage-per-changed-file: 0.0
+  check-overall-coverages: true
 
 jobs:
   detect:
@@ -82,11 +81,12 @@ jobs:
         uses: MoranaApps/jacoco-report@69351d88d18f7697c416e1bc2020ed05606d8120
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          global-thresholds: '77*80'
-          report-thresholds-default: '0*0*0'
-          skip-unchanged: 'true'
-          evaluate-unchanged: 'false'
-          report-groups: ${{ env.REPORT_GROUPS }}
+          paths: |
+            StatusBoard/target/**/jacoco-report/jacoco.xml
+          global-thresholds: '${{ env.coverage-overall }}*${{ env.coverage-changed-files }}'
+          report-thresholds-default: '${{ env.coverage-overall }}*${{ env.coverage-changed-files }}*${{ env.coverage-per-changed-file }}'
+          comment-level: 'full'
+          skip-unchanged: true
 
   noop:
     name: No Operation
