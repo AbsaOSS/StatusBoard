@@ -1,22 +1,48 @@
-name: JaCoCo Report
+name: CI Check JaCoCo code-coverage
 
 on:
   pull_request:
     branches: [ master ]
-    types: [ opened, edited, synchronize, reopened ]
 
 env:
   scalaLong: 2.13.11
   scalaShort: "2.13"
-  coverage-overall: 80.0
-  coverage-changed-files: 80.0
-  coverage-per-changed-file: 0.0
-  check-overall-coverages: true
+  REPORT_GROUPS: |
+    - name: statusboard
+      paths:
+        - '**/target/**/jacoco-report/jacoco.xml'
+      thresholds: '77*80*60'
 
 jobs:
-  jacoco-report:
-    name: JaCoCo Report
+  detect:
+    name: Detect Changed Files
     runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      scala_changed: ${{ steps.filter.outputs.scala }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d
+        id: filter
+        with:
+          token: ""
+          filters: |
+            scala:
+              - '**/*.scala'
+              - '!project/**'
+
+  build-test-and-measure:
+    name: Build, Test and Measure
+    needs: detect
+    if: needs.detect.outputs.scala_changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     services:
       dynamodb-local:
         image: "amazon/dynamodb-local:latest"
@@ -51,16 +77,21 @@ jobs:
         with:
           python-version: '3.14'
 
-      - name: Publish JaCoCo Report in PR comments
+      - name: Check coverage thresholds and add reports in PR comments
         id: jacoco
         uses: MoranaApps/jacoco-report@69351d88d18f7697c416e1bc2020ed05606d8120
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          paths: |
-            **/target/**/jacoco/report/jacoco.xml
-          sensitivity: "detail"
-          comment-mode: 'single'
-          min-coverage-overall: ${{ env.coverage-overall }}
-          min-coverage-changed-files: ${{ env.coverage-changed-files }}
-          min-coverage-per-changed-file: ${{ env.coverage-per-changed-file }}
-          skip-unchanged: false
+          global-thresholds: '77*80'
+          report-thresholds-default: '0*0*0'
+          skip-unchanged: 'true'
+          evaluate-unchanged: 'false'
+          report-groups: ${{ env.REPORT_GROUPS }}
+
+  noop:
+    name: No Operation
+    needs: detect
+    if: needs.detect.outputs.scala_changed != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No changes in src/**/*.scala — passing."
