@@ -10,7 +10,7 @@ env:
   REPORT_GROUPS: |
     - name: statusboard
       paths:
-        - '**/target/**/jacoco/report/jacoco.xml'
+        - '**/target/**/jacoco-report/jacoco.xml'
       thresholds: '77*80*60'
 
 jobs:
