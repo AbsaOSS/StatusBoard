@@ -82,7 +82,7 @@ jobs:
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           paths: |
-            StatusBoard/target/**/jacoco-report/jacoco.xml
+            **/target/**/jacoco-report/jacoco.xml
           global-thresholds: '${{ env.coverage-overall }}*${{ env.coverage-changed-files }}'
           report-thresholds-default: '${{ env.coverage-overall }}*${{ env.coverage-changed-files }}*${{ env.coverage-per-changed-file }}'
           comment-level: 'full'
