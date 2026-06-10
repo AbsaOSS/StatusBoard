@@ -106,7 +106,7 @@ za. co.absa.statusboard/
 - Access services via ZIO environment: `ZIO.serviceWithZIO[Service](_. method())`
 
 ### API Endpoints (Tapir)
-Define endpoints in `Endpoints. scala` with full type safety
+Define endpoints in `Endpoints.scala` with full type safety
 - Use `@accessible` macro for controller traits
 - Bind public endpoints: `bindEndpoint(endpoint, handler)`
 - Bind authenticated endpoints: `bindEndpoint(authController)(endpoint, handler)`

@@ -1,4 +1,4 @@
-name: CI Check JaCoCo code-coverage
+name: CI Check JaCoCo
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 env:
   scalaLong: 2.13.13
   scalaShort: "2.13"
-  coverage-overall: 77.0
+  coverage-overall: 80.0
   coverage-changed-files: 80.0
   coverage-per-changed-file: 0.0
   check-overall-coverages: true
