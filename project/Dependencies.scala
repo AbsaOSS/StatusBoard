@@ -17,7 +17,7 @@ import sbt.*
 
 object Dependencies {
   object Versions {
-    val scala213 = "2.13.12"
+    val scala213 = "2.13.13"
 
     val zio = "2.0.21"
     val zioLogging = "2.2.0"
