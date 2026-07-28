@@ -69,6 +69,9 @@ jobs:
           print-empty-chapters: false
           row-format-issue: '{type}: {number} _{title}_ by {developers} in {pull-requests}'
           row-format-pr: '{number} _{title}_ by {developers}'
+          service-chapter-exclude: |
+            Closed Issues without Pull Request ⚠️:
+              - [scope:security, type:tech-debt]
 
       - name: Create and push tag
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
