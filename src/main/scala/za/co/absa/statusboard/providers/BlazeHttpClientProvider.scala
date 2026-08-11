@@ -36,8 +36,8 @@ class BlazeHttpClientProvider(httpClient: Client[Task]) extends HttpClientProvid
     requestPhase1 <- maybeRequestPayload match {
       case Some(payload) => ZIO.attempt {
         requestPhase0
-          .withHeaders(Header.Raw(CIString(ContentType), "application/json"))
           .withEntity(payload)
+          .withHeaders(Header.Raw(CIString(ContentType), "application/json"))
       }
       case None => ZIO.succeed(requestPhase0)
     }
