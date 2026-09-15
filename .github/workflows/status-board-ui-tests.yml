@@ -10,7 +10,7 @@ on:
       - '.github/workflows/status-board-ui-tests.yml'
 
 jobs:
-  build-and-lint:
+  run-ui-tests:
     environment: DEV
     runs-on: ubuntu-latest
     defaults:

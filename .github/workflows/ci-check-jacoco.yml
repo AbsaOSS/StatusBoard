@@ -33,8 +33,8 @@ jobs:
               - '**/*.scala'
               - '!project/**'
 
-  build-test-and-measure:
-    name: Build, Test and Measure
+  test-and-measure:
+    name: Test and Measure
     needs: detect
     if: needs.detect.outputs.scala_changed == 'true'
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
           jvm: corretto:21.0.2.13.1
           apps: sbt
 
-      - name: Build and run tests with test coverage
+      - name: Test with coverage
         id: jacoco-run
         continue-on-error: true
         run: sbt jacoco
