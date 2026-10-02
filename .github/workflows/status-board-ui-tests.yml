@@ -44,8 +44,8 @@ jobs:
       - name: Test with coverage
         run: npm test -- --coverage
 
-      - name: Build
-        run: npm run build -- --configuration production
+      - name: Compile
+        run: npm run compile -- --configuration production
 
       - name: Log Angular errors
         if: failure()
