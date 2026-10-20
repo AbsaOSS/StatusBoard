@@ -5,7 +5,7 @@
     "sync-version": "node syncVersion.js",
     "ng": "npm run sync-version && ng",
     "start": "npm run sync-version && ng serve",
-    "build": "npm run sync-version && ng build",
+    "compile": "npm run sync-version && ng build",
     "watch": "npm run sync-version && ng build --watch --configuration development",
     "test": "npm run sync-version && jest",
     "test:watch": "npm run sync-version && jest --watch",
